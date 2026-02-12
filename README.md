@@ -49,7 +49,11 @@ POST /api/auth/register - Create user & wallet
 
 POST /api/auth/login - Authenticate & get token
 
-Wallet & Payments
+POST /api/auth/forgot-password - Forgot password link that will send otp to mail
+
+POST /api/auth/reset-password  - Reset password
+
+Wallet & Payments/ Account
 POST /api/account/set-pin - Secure wallet for transactions
 
 POST /api/account/fund - Deposit funds
@@ -57,6 +61,12 @@ POST /api/account/fund - Deposit funds
 POST /api/account/transfer - Process internal/external payments
 
 GET /api/account/transactionHistory - Retrieve payment logs
+
+GET /api/account/banks - list all banks
+
+GET /api/account/transaction/:id - Retrieve transaction detail
+
+e.t.c (Check the code for more)
 
 📝 Development Note
 This is a backend-only project focused on the logic and security of financial data processing. All responses are served in JSON format.
