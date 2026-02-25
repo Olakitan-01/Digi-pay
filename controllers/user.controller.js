@@ -23,7 +23,7 @@ const updateProfile = async (req, res) => {
         // If ID details are provided, we could set status to 'verified' 
         // (In a real app, this would be 'pending' until an admin checks it)
         if (idType && idNumber) {
-            updatedData.kycStatus = 'verified';
+            updatedData.kycStatus = 'pending';
         }
 
         const user = await User.findByIdAndUpdate(
@@ -38,4 +38,14 @@ const updateProfile = async (req, res) => {
     }
 };
 
-module.exports = { getProfile, updateProfile };
+const updateFcmToken = async (req, res) => {
+  try {
+    const { fcmToken } = req.body;
+    await User.findByIdAndUpdate(req.user._id, { fcmToken });
+    res.status(200).json({ message: 'FCM token updated' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { getProfile, updateProfile, updateFcmToken };

@@ -29,6 +29,8 @@ const TransactionSchema = new mongoose.Schema(
     reference: { 
       type: String, 
       unique: true, 
+      required: true,
+      index: true
       
     }, // e.g., TX-164444000
     bankName: { 
@@ -36,6 +38,8 @@ const TransactionSchema = new mongoose.Schema(
       
     },
     description: { type: String },
+
+    reciepientAccountNumber: {type: String}
     
   },
   { timestamps: true }

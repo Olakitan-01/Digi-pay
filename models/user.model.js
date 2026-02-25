@@ -49,10 +49,6 @@ const UserSchema = new mongoose.Schema({
         type: Boolean, 
         default: true 
     },
-    transactionPin: {
-        type: String,
-        trim: true
-    },
     hasPin: {
         type: Boolean,
         default: false

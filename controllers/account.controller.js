@@ -4,6 +4,7 @@ const User = require('../models/user.model');
 const Transaction = require('../models/transaction.model');
 const bcrypt = require('bcryptjs');
 const axios = require('axios');
+const notificationQueue = require('../utils/notificationQueue.util.js');
 
 
 
@@ -31,7 +32,7 @@ const getBalance = async (req, res) => {
 const verifyAccount = async (req, res) => {
     try {
         const { accountNumber } = req.params;
-        const account = await Account.findOne({ accountNumber }).populate('userId', 'firstName lastName');
+        const account = await Account.findOne({ accountNumber }).populate('userId', 'first_name last_name');
 
         if (!account) {
             return res.status(404).json({ message: "Account not found" });
@@ -39,7 +40,7 @@ const verifyAccount = async (req, res) => {
 
         res.status(200).json({
             accountNumber: account.accountNumber,
-            accountName: `${account.userId.firstName} ${account.userId.lastName}`
+            accountName: `${account.userId.first_name} ${account.userId.last_name}`
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -74,8 +75,17 @@ const fundWallet = async (req, res) => {
             reference: `FUND-${Date.now()}`,
             bankName: "Internal Deposit"
         });
+        notificationQueue.add({
+            type: 'deposit',
+            userId: req.user._id,
+            details: {
+                amount,
+                currency: account.currency,
+                newBalance: account.balance
+            },
+            fcmToken: req.user.fcmToken
+            });
 
-        // 2. Format the response so it looks like money (e.g., 5000.00)
         res.status(200).json({
             success: true,
             message: "Wallet funded successfully",
@@ -145,6 +155,17 @@ const transferMoney = async (req, res) => {
             status: 'success',
             reference: reference
         });
+        notificationQueue.add({
+            type: 'transfer',
+            userId: req.user._id,
+            details: {
+                amount,
+                currency: senderAccount.currency,
+                recipient: recipientAccountNumber,
+                reference
+            },
+            fcmToken: sender.fcmToken // Fetch from user
+            });
 
         // 7. Final Response (Detailed Receipt)
         res.status(200).json({
