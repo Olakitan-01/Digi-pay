@@ -7,6 +7,7 @@ const Account = require('./models/account.model');
 const Transaction = require('./models/transaction.model');
 const userRoutes = require('./routes/user.route');
 const accountRoutes = require('./routes/account.route');
+const adminRoutes = require('./routes/admin.route')
 
 // Connect to MongoDB
 connectDB();    
@@ -22,6 +23,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 // Use account routes
 app.use('/api/account', accountRoutes);
+
+//admin routes
+app.use('/api/admin', adminRoutes)
 
 app.get('/', (req, res) => {
     res.send('Hello World something huge is cominggggggggggggggggg. It is called Digi!');
