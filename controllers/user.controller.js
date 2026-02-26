@@ -4,7 +4,21 @@ const User = require('../models/user.model');
 
 // Get current user profile
 const getProfile = async (req, res) => {
-    res.status(200).json(req.user);
+  try {
+    const user = await User.findById(req.user._id).select('-password -transactionPin -resetPasswordOTP -resetPasswordExpires');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Optionally format KYC for response (if null/empty, show as pending/incomplete)
+    const profile = {
+      ...user.toObject(),
+      kycStatus: user.kycStatus || 'pending', // Ensure shown if default
+      kycDetails: user.kycDetails || { idType: null, idNumber: null } // Null until updated
+    };
+
+    res.status(200).json({ success: true, data: profile });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // Update Profile & KYC

@@ -6,7 +6,7 @@ const { updateFcmToken } = require('../controllers/user.controller');
 
 
 router.get('/profile', auth, getProfile);
-router.put('/update', auth, updateProfile);
+router.patch('/update', auth, updateProfile);
 router.post('/update-fcm-token', auth, updateFcmToken);
 
 module.exports = router;
